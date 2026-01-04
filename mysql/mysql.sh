@@ -1,6 +1,6 @@
 #!/bin/bash
 #install mysql-serer 8.0
-dnf install mysql-server -y
+sudo dnf install mysql-server -y
 #start service
 sudo systemctl enable mysqld
 #enable mysql
