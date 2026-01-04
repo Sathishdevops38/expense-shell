@@ -15,7 +15,7 @@ cd /app
 sudo unzip /tmp/backend.zip
 sudo npm install
 #create service file
-sudo cp ./service.repo /etc/systemd/system/backend.service
+sudo cp config.repo /etc/systemd/system/backend.service
 #demon-reload
 sudo systemctl daemon-reload
 #start service
