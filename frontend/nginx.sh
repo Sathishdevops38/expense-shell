@@ -10,5 +10,5 @@ curl -o /tmp/frontend.zip https://expense-joindevops.s3.us-east-1.amazonaws.com/
 cd /usr/share/nginx/html
 sudo unzip /tmp/frontend.zip
 #service
-sudo cp front.repo /etc/nginx/default.d/expense.conf
+sudo cp ./front.repo /etc/nginx/default.d/expense.conf
 suod systemctl restart nginx
