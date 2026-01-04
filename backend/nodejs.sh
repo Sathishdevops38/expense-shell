@@ -27,4 +27,4 @@ sudo systemctl enable backend
 sudo dnf install mysql -y
 
 #Load Schema
-sudo mysql -h 172.31.20.245 -uroot -pExpenseApp@1 < /app/schema/backend.sql
+sudo mysql -h 172.31.23.108 -uroot -pExpenseApp@1 < /app/schema/backend.sql
