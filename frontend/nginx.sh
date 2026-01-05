@@ -37,9 +37,6 @@ validate $? "Installing Nginx"
 systemctl enable nginx &>>$Logs_File
 validate $? "Enabling Nginx"
 
-systemctl start nginx &>>$Logs_File
-validate $? "Starting Nginx"
-
 rm -rf /usr/share/nginx/html/* &>>$Logs_File
 validate $? "Removing default content"
 
@@ -63,7 +60,7 @@ location /health {
 EOF
 validate $? "Created expense config file"
 
-systemctl restart nginx &>>$Logs_File
+systemctl start nginx &>>$Logs_File
 validate $? "Restarting Nginx"
 
 END_TIME=$(date +%s)
