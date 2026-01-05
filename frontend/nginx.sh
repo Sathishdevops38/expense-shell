@@ -51,7 +51,7 @@ unzip /tmp/frontend.zip -d /usr/share/nginx/html &>>$Logs_File
 validate $? "Extracting frontend code"
 
 # Corrected Here-Doc for Nginx Config
-tee /etc/nginx/default.d/expense.conf <<EOF
+sudo tee /etc/nginx/default.d/expense.conf <<EOF
 proxy_http_version 1.1;
 
 location /api/ { proxy_pass http://backend.daws38sat.fun:8080/; }
