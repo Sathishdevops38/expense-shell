@@ -11,7 +11,7 @@ Script_Name=$(echo $0 | cut -d "." -f1 )
 Logs_File="$Logs_Folder/$Script_Name.log"
 START_TIME=$(date +%s)
 SCRIPT_DIR=$PWD
-BACKEND_SERVER="backend.daws38sat.fun"
+BACKEND_SERVER="backend-dev.daws38sat.fun"
 
 mkdir -p $Logs_Folder
 echo "Script started executed at: $(date)" | tee -a $Logs_File

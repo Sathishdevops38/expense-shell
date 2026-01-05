@@ -10,7 +10,7 @@ Script_Name=$(echo $0 | cut -d "." -f1 )
 Logs_File="$Logs_Folder/$Script_Name.log"
 START_TIME=$(date +%s)
 SCRIPT_DIR=$PWD
-MYSQL_HOST="mysql.daws38sat.fun"
+MYSQL_HOST="mysql-dev.daws38sat.fun"
 
 mkdir -p $Logs_Folder
 echo "Script started executed at: $(date)" | tee -a $Logs_File
