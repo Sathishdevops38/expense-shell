@@ -47,7 +47,7 @@ else
     echo -e "User already exist ... $Y SKIPPING $N"
 fi
 
-sudo mkdir /app &>>$Logs_File
+mkdir /app &>>$Logs_File
 if [ $? -ne 0 ]; then
     echo -e "app folder already exists .. $Y SKIPPING$N"
 else
