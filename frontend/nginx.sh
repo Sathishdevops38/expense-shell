@@ -54,7 +54,7 @@ validate $? "Extracting frontend code"
 sudo tee /etc/nginx/default.d/expense.conf <<EOF
 proxy_http_version 1.1;
 
-location /api/ { proxy_pass http://"$BACKEND_SERVER":8080/; }
+location /api/ { proxy_pass http://${BACKEND_SERVER}:8080/; }
 
 location /health {
   stub_status on;
