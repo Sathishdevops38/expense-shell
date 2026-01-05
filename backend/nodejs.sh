@@ -10,6 +10,7 @@ Script_Name=$(echo $0 | cut -d "." -f1 )
 Logs_File="$Logs_Folder/$Script_Name.log"
 START_TIME=$(date +%s)
 SCRIPT_DIR=$PWD
+MYSQL_HOST = "mysql.daws38sat.fun"
 
 mkdir -p $Logs_Folder
 echo "Script started executed at: $(date)" | tee -a $Logs_File
@@ -38,8 +39,12 @@ validate $? "Enabling nodejs:20 version"
 sudo dnf install nodejs -y
 validate $? "Installing nodejs"
 
-sudo useradd expense
-validate $? "Creating expense user"
+if [ $? -ne 0 ]; then
+    useradd --system --home /app --shell /sbin/nologin --comment "expense system user" expense &>>$LOG_FILE
+    validate $? "Creating system user"
+else
+    echo -e "User already exist ... $Y SKIPPING $N"
+fi
 
 sudo mkdir /app
 validate $? "Creating app directory"
@@ -49,6 +54,9 @@ validate $? "Downloading backend code"
 
 cd /app
 validate $? "change tp app dir"
+
+rm -rf /app/*
+validate $? "Removing existing code"
 
 sudo unzip /tmp/backend.zip &>> $Logs_File
 validate $? "unzipping files"
@@ -61,7 +69,7 @@ sudo tee /etc/systemd/system/backend.service <<EOF
 Description = Backend Service
 [Service]
 User=expense
-Environment=DB_HOST="mysql.daws38sat.fun"
+Environment=DB_HOST= $MYSQL_HOST
 ExecStart=/bin/node /app/index.js
 SyslogIdentifier=backend
 [Install]
@@ -81,8 +89,12 @@ validate $? "enabled backend"
 sudo dnf install mysql -y
 validate $? "install mysql client"
 
-sudo mysql -h mysql.daws38sat.fun -uroot -pExpenseApp@1 < /app/schema/backend.sql
-validate $? "create schema"
+sudo mysql -h $MYSQL_HOST -uroot -pExpenseApp@1 -e 'transactions' &>>$Logs_File
+if [ $? -ne 0 ]; then
+    mysql -h $MYSQL_HOST -uroot -pExpenseApp@1 < /app/schema/backend.sql &>>$Logs_File
+else
+    echo -e "Shipping data is already loaded ... $Y SKIPPING $N"
+fi
 
 sudo systemctl restart backend
 validate $? "restart backend"

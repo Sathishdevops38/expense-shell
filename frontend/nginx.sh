@@ -11,6 +11,7 @@ Script_Name=$(echo $0 | cut -d "." -f1 )
 Logs_File="$Logs_Folder/$Script_Name.log"
 START_TIME=$(date +%s)
 SCRIPT_DIR=$PWD
+BACKEND_SERVER="backend.daws38sat.fun"
 
 mkdir -p $Logs_Folder
 echo "Script started executed at: $(date)" | tee -a $Logs_File
@@ -53,7 +54,7 @@ validate $? "Extracting frontend code"
 sudo tee /etc/nginx/default.d/expense.conf <<EOF
 proxy_http_version 1.1;
 
-location /api/ { proxy_pass http://backend.daws38sat.fun:8080/; }
+location /api/ { proxy_pass http://$BACKEND_SEREVR:8080/; }
 
 location /health {
   stub_status on;
