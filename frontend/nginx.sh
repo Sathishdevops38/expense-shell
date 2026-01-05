@@ -1,14 +1,19 @@
 #!/bin/bash
-#install nginx
-sudo dnf install nginx -y
+sudo dnf install nginx -y 
 sudo systemctl enable nginx
 sudo systemctl start nginx
-#remove default nginx content
 sudo rm -rf /usr/share/nginx/html/*
-#download fronend content
 curl -o /tmp/frontend.zip https://expense-joindevops.s3.us-east-1.amazonaws.com/expense-frontend-v2.zip
-cd /usr/share/nginx/html
+sudo cd /usr/share/nginx/html
 sudo unzip /tmp/frontend.zip
-#service
-sudo cp front.repo /etc/nginx/default.d/expense.conf
+sudo tee /etc/nginx/default.d/expense.conf <<EOF
+proxy_http_version 1.1;
+
+location /api/ { proxy_pass http://backend.daws.38sat.fun:8080/; }
+
+location /health {
+  stub_status on;
+  access_log off;
+}
+EOF
 sudo systemctl restart nginx

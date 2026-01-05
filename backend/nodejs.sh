@@ -1,30 +1,28 @@
 #!/bin/bash
-#disable default node version
 sudo dnf module disable nodejs -y
-#enable node 20 version
 sudo dnf module enable nodejs:20 -y
-#install nodejs
 sudo dnf install nodejs -y
-
-#useradd
 sudo useradd expense
-#create dir
 sudo mkdir /app
 curl -o /tmp/backend.zip https://expense-joindevops.s3.us-east-1.amazonaws.com/expense-backend-v2.zip
 cd /app
+unzip /tmp/backend.zip
 sudo unzip /tmp/backend.zip
 sudo npm install
-#create service file
-sudo cp config.repo /etc/systemd/system/backend.service
-#demon-reload
+sudo tee /etc/systemd/system/backend.service <<EOF
+[Unit]
+Description = Backend Service
+[Service]
+User=expense
+Environment=DB_HOST="mysql.daws38sat.fun"
+ExecStart=/bin/node /app/index.js
+SyslogIdentifier=backend
+[Install]
+WantedBy=multi-user.target
+EOF
 sudo systemctl daemon-reload
-#start service
 sudo systemctl start backend
-#enable service
 sudo systemctl enable backend
-
-#install mysql
 sudo dnf install mysql -y
-
-#Load Schema
-sudo mysql -h 172.31.23.108 -uroot -pExpenseApp@1 < /app/schema/backend.sql
+sudo mysql -h mysql.daws38sat.fun -uroot -pExpenseApp@1 < /app/schema/backend.sql
+sudo systemctl restart backend
