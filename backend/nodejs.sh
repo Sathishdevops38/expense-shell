@@ -39,6 +39,7 @@ validate $? "Enabling nodejs:20 version"
 sudo dnf install nodejs -y
 validate $? "Installing nodejs"
 
+id expense &>>$LOG_FILE
 if [ $? -ne 0 ]; then
     useradd --system --home /app --shell /sbin/nologin --comment "expense system user" expense &>>$LOG_FILE
     validate $? "Creating system user"
