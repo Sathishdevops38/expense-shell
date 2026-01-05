@@ -6,7 +6,6 @@ sudo useradd expense
 sudo mkdir /app
 curl -o /tmp/backend.zip https://expense-joindevops.s3.us-east-1.amazonaws.com/expense-backend-v2.zip
 cd /app
-unzip /tmp/backend.zip
 sudo unzip /tmp/backend.zip
 sudo npm install
 sudo tee /etc/systemd/system/backend.service <<EOF
