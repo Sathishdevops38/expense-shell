@@ -9,7 +9,7 @@ sudo unzip /tmp/frontend.zip
 sudo tee /etc/nginx/default.d/expense.conf <<EOF
 proxy_http_version 1.1;
 
-location /api/ { proxy_pass http://backend.daws.38sat.fun:8080/; }
+location /api/ { proxy_pass http://backend.daws38sat.fun:8080/; }
 
 location /health {
   stub_status on;
