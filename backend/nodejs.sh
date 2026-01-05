@@ -47,8 +47,12 @@ else
     echo -e "User already exist ... $Y SKIPPING $N"
 fi
 
-sudo mkdir /app
-validate $? "Creating app directory"
+sudo mkdir /app &>>$Logs_File
+if [ $? -ne 0 ]; then
+    echo -e "app folder already exists .. $Y SKIPPING$N"
+else
+    validate $? "Creating app directory"
+fi
 
 curl -o /tmp/backend.zip https://expense-joindevops.s3.us-east-1.amazonaws.com/expense-backend-v2.zip
 validate $? "Downloading backend code"
