@@ -74,7 +74,7 @@ sudo tee /etc/systemd/system/backend.service <<EOF
 Description = Backend Service
 [Service]
 User=expense
-Environment=DB_HOST= $MYSQL_HOST
+Environment="DB_HOST=$MYSQL_HOST"
 ExecStart=/bin/node /app/index.js
 SyslogIdentifier=backend
 [Install]
