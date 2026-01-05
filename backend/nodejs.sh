@@ -41,7 +41,7 @@ validate $? "Installing nodejs"
 
 id expense &>>$Logs_File
 if [ $? -ne 0 ]; then
-    useradd --system --home /app --shell /sbin/nologin --comment "expense system user" expense &>>$LOG_FILE
+    useradd --system --home /app --shell /sbin/nologin --comment "expense system user" expense &>>$Logs_File
     validate $? "Creating system user"
 else
     echo -e "User already exist ... $Y SKIPPING $N"
