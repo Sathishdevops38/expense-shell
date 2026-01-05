@@ -94,11 +94,23 @@ validate $? "enabled backend"
 sudo dnf install mysql -y
 validate $? "install mysql client"
 
-sudo mysql -h $MYSQL_HOST -uroot -pExpenseApp@1 -e 'transactions' &>>$Logs_File
+# 1. Check if the 'transactions' database exists
+sudo mysql -h "${MYSQL_HOST}" -u root -p'ExpenseApp@1' -e "SHOW DATABASES LIKE 'transactions'" &>>$Logs_File
+
 if [ $? -ne 0 ]; then
-    mysql -h $MYSQL_HOST -uroot -pExpenseApp@1 < /app/schema/backend.sql &>>$Logs_File
+    echo -e "Schema not found, loading schema... $Y"
+    # 2. Load the schema from the SQL file
+    mysql -h "${MYSQL_HOST}" -u root -p'ExpenseApp@1' < /app/schema/backend.sql &>>$Logs_File
+    
+    # 3. Verify if the load was successful
+    if [ $? -eq 0 ]; then
+        echo -e "Schema loaded successfully ... $G SUCCESS $N"
+    else
+        echo -e "Schema load failed ... $R FAILURE $N"
+        exit 1
+    fi
 else
-    echo -e "Shipping data is already loaded ... $Y SKIPPING $N"
+    echo -e "Transactions data is already loaded ... $Y SKIPPING $N"
 fi
 
 sudo systemctl restart backend
