@@ -7,17 +7,18 @@ N="\e[0m"
 
 USER_ID=$(id -u)
 Logs_Folder="/var/log/shell-expense"
-Script_Name=$(echo $0 | cut -d "." -f1 )
+Script_Name=$(echo $0 | cut -d "." -f1 | awk -F "/" '{print $NF}')
 Logs_File="$Logs_Folder/$Script_Name.log"
 START_TIME=$(date +%s)
-SCRIPT_DIR=$PWD
 BACKEND_SERVER="backend.daws38sat.fun"
 
+# Create log folder if not exists
 mkdir -p $Logs_Folder
+
 echo "Script started executed at: $(date)" | tee -a $Logs_File
 
 if [ $USER_ID -ne 0 ]; then
-    echo -e "$R ERRROR$N:: Run the script with root privillages"
+    echo -e "$R ERROR$N:: Run the script with root privileges"
     exit 1
 fi
 
@@ -26,32 +27,31 @@ validate(){
         echo -e "$2 --- $R Failure $N"
         exit 1
     else
-        echo -e "$2--- $G Success $N"
+        echo -e "$2 --- $G Success $N"
     fi
 }
 
-sudo dnf install nginx -y 
+dnf install nginx -y &>>$Logs_File
 validate $? "Installing Nginx"
 
-sudo systemctl enable nginx
+systemctl enable nginx &>>$Logs_File
 validate $? "Enabling Nginx"
 
-sudo systemctl start nginx
+systemctl start nginx &>>$Logs_File
 validate $? "Starting Nginx"
 
-sudo rm -rf /usr/share/nginx/html/*
+rm -rf /usr/share/nginx/html/* &>>$Logs_File
 validate $? "Removing default content"
 
-curl -o /tmp/frontend.zip https://expense-joindevops.s3.us-east-1.amazonaws.com/expense-frontend-v2.zip
+curl -o /tmp/frontend.zip https://expense-joindevops.s3.us-east-1.amazonaws.com/expense-frontend-v2.zip &>>$Logs_File
 validate $? "Downloading frontend code"
 
-sudo cd /usr/share/nginx/html
-validate $? "Moving to app location"
-
-sudo unzip /tmp/frontend.zip &>> $Logs_File
+# Instead of 'sudo cd', we use -d flag with unzip to specify destination
+unzip /tmp/frontend.zip -d /usr/share/nginx/html &>>$Logs_File
 validate $? "Extracting frontend code"
 
-sudo tee /etc/nginx/default.d/expense.conf <<EOF
+# Corrected Here-Doc for Nginx Config
+tee /etc/nginx/default.d/expense.conf <<EOF
 proxy_http_version 1.1;
 
 location /api/ { proxy_pass http://${BACKEND_SERVER}:8080/; }
@@ -61,10 +61,11 @@ location /health {
   access_log off;
 }
 EOF
-validate $? "created expense conf file"
+validate $? "Created expense config file"
 
-sudo systemctl restart nginx
+systemctl restart nginx &>>$Logs_File
 validate $? "Restarting Nginx"
+
 END_TIME=$(date +%s)
 TOTAL_TIME=$(( $END_TIME - $START_TIME ))
 echo -e "Script executed in: $Y $TOTAL_TIME Seconds $N"
