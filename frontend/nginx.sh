@@ -61,7 +61,7 @@ EOF
 validate $? "Created expense config file"
 
 systemctl start nginx &>>$Logs_File
-validate $? "Restarting Nginx"
+validate $? "starting Nginx"
 
 END_TIME=$(date +%s)
 TOTAL_TIME=$(( $END_TIME - $START_TIME ))
