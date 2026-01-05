@@ -10,7 +10,7 @@ Logs_Folder="/var/log/shell-expense"
 Script_Name=$(echo $0 | cut -d "." -f1 | awk -F "/" '{print $NF}')
 Logs_File="$Logs_Folder/$Script_Name.log"
 START_TIME=$(date +%s)
-# BACKEND_SERVER="backend.daws38sat.fun"
+BACKEND_SERVER="backend.daws38sat.fun"
 
 # Create log folder if not exists
 mkdir -p $Logs_Folder
@@ -51,7 +51,7 @@ validate $? "Extracting frontend code"
 sudo tee /etc/nginx/default.d/expense.conf <<EOF
 proxy_http_version 1.1;
 
-location /api/ { proxy_pass http://backend.daws38sat.fun:8080/; }
+location /api/ { proxy_pass http://${BACKEND_SERVER}:8080/; }
 
 location /health {
   stub_status on;
